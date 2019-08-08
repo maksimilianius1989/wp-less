@@ -13,5 +13,6 @@
     <span>2010 © Wood Design. All rights reserved. Design by Tomas Laurinavičius.</span>
 </footer>
 </div>
+<?php wp_footer() ?>
 </body>
 </html>

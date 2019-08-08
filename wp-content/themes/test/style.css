@@ -24,6 +24,10 @@ span {
 header *{
     color: #b8b8b8;
 }
+img {
+    max-width: 100%;
+    height: auto;
+}
 .clearfix::after{
     content: "";
     display: block;
@@ -39,15 +43,20 @@ header *{
 .header-top, .header-bottom{
     border-bottom: 1px solid #eeeeee;
 }
-.header-top h1{
+.header-bottom .widge_text {
+    line-height: 30px;
+}
+.header-top .logo{
     font-family: val;
     font-size: 36px;
     float: left;
     padding: 20px 0;
     margin: 0;
     color: #bc8a59;
+    display: block;
+    text-decoration: none;
 }
-.header-top h1::before{
+.header-top .logo::before{
     content: "";
     display: inline-block;
     width: 25px;
@@ -56,28 +65,28 @@ header *{
     background: url(assets/img/logo.png) no-repeat;
     background-size: 100%;
 }
-nav{
+.top-menu{
     float: right;
     padding: 20px 0;
 }
-nav li, .menu-button{
+.top-menu li, .menu-button{
     padding: 10px;
     margin: 0 5px;
 }
 .menu-button{
     display: none;
 }
-nav li{
+.top-menu li{
     display: inline-block;
 }
-nav a{
+.top-menu a{
     text-decoration: none;
     display: block;
 }
-nav a.active{
+.top-menu a.active, .top-menu li.current-menu-item a{
     color: #8a6540;
 }
-nav a:hover{
+.top-menu a:hover{
     color: #f2b77d;
 }
 .header-bottom{
@@ -100,7 +109,7 @@ main, main *, aside{
 }
 main{
     float: left;
-    max-width: 68%;
+    width: 68%;
     margin-bottom: 20px;
     color: #bdbdbd;
 }
@@ -110,22 +119,25 @@ main h2{
 main span{
     line-height: 25px;
 }
-main section{
+main .postItem-full {
+    margin-right: 20px;
+}
+main .postItem{
     float: left;
     max-width: 47%;
     margin-bottom: 10px;
     margin-right: 3%;
 }
-main section:nth-child(2n+3){
+main .postItem:nth-child(2n+3){
     clear: both;
 }
-main section a{
+main .postItem a{
     display: block;
     padding: 4px;
     border: 1px solid rgba(184,184,184,0.3);
     border-radius: 5px;
 }
-main section img{
+main .postItem img{
     width: 100%;
 }
 .main-footer{
@@ -197,20 +209,24 @@ aside ul{
     clear: both;
     text-align:  right;
 }
-h2.menu{
+.widgettile{
     padding: 10px 0;
 }
-.secondery-navigation li:first-child a{
+.widget_categories li:first-child a{
     transition: display 2s;
     border-top: 1px solid #eee;
 }
-.secondery-navigation a{
+.widget_categories li.current-cat a{
+    color: #000;
+}
+
+.widget_categories a{
     text-decoration: none;
     display: block;
     padding: 8px 5px;
     border-bottom: 1px solid #eee;
 }
-.secondery-navigation a:hover{
+.widget_categories a:hover{
     background: #f9f9f9;
     color: #333;
 }
@@ -256,11 +272,11 @@ footer>span{
         margin: 0 auto;
         padding: 0 10px;
     }
-    .header-top h1{
+    .header-top .logo{
         float: none;
         text-align:center;
     }
-    nav{
+    .top-menu{
         float: none;
         text-align:center;
         padding: 0;
@@ -268,24 +284,24 @@ footer>span{
     }
     main, aside, footer .copy{
         float: none;
-        max-width:none;
+        width: auto;
     }
     main{
         border-bottom: 1px solid #eee;
     }
-    main section{
+    main .postItem{
         margin: 0 1.5%;
     }
     .main-footer a{
         margin: 10px;
     }
-    h2.menu{
+    .widgettitle{
         cursor: pointer;
         background: #f9f9f9;
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
     }
-    .secondery-navigation ul{
+    .widget_categories ul{
         display:none;
     }
     footer>span, .footer-links{
@@ -301,7 +317,7 @@ footer>span{
 }
 
 @media screen and (max-width: 480px) {
-    nav {
+    .top-menu {
         position:relative;
     }
     .menu-button{
@@ -309,23 +325,23 @@ footer>span{
         cursor: pointer;
         display: block;
     }
-    nav ul{
+    .top-menu ul{
         background: #fff;
         position: absolute;
         width:100%;
         display: none;
         border-top: 1px solid #eee;
     }
-    nav li{
+    .top-menu li{
         display: block;
         border-bottom: 1px solid #eee;
     }
-    nav a:hover{
+    .top-menu a:hover{
         background: #fafafa;
     }
-    main section{
+    main .postItem{
         float: none;
-        max-width:none;
+        width:auto;
     }
     .main-footer{
         float: none;

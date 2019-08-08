@@ -1,19 +1,23 @@
 <!doctype html>
-<html lang="ru">
+<html <?php language_attributes(); ?>>
 <head>
     <title>Главная</title>
-    <meta charset="utf-8">
+    <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width">
-    <link href="http://wordpress.loc/wp-content/themes/test/style.css" rel="stylesheet">
-    <script type ="text/javascript" src="js/script.js"></script>
+    <?php wp_head(); ?>
 </head>
 <body>
 <div  class="wrapper">
     <header>
         <div class="header-top clearfix">
-            <h1>Wood Design</h1>
-            <nav>
+            <a href="<?php echo home_url(); ?>" class="logo"><?php bloginfo('name'); ?></a>
+            <nav class="top-menu">
                 <div class="menu-button">MENU</div>
+                <?php wp_nav_menu([
+                    'theme_location' => 'top',
+                    'container' => null,
+                    'items_wrap' => '<ul>%3$s</ul>'
+                ]); ?>
                 <ul>
                     <li><a href="#" class="active">Home</a></li>
                     <li><a href="#">About</a></li>
@@ -23,8 +27,12 @@
                 </ul>
             </nav>
         </div>
-        <div  class="header-bottom">
-            <span>Wood Design is a modern web & graphic design studio in Europe. We create beautiful things for web and print. You can see our great work examples in <a href="#">Portfolio</a>. If you need a professional design services <a href="#">Contact</a> us. We would love to work with you.</span>
-        </div>
+        <?php if (is_active_sidebar('sidebar-top')): ?>
+            <div  class="header-bottom">
+                <span>
+                    <?php dynamic_sidebar('sidebar-top'); ?>
+                </span>
+            </div>
+        <?php endif; ?>
     </header>
     <div  class="content-wrapper clearfix">
