@@ -1,7 +1,7 @@
 <?php get_header() ?>
 
 <main  class="clearfix">
-
+    Категороия
     <div class="posts-flow clearfix">
         <?php if (have_posts()): ?>
             <?php while(have_posts()): the_post(); ?>
