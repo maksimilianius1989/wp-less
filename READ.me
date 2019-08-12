@@ -1,0 +1,186 @@
+<?php
+--- 5 ---
+wp-admin/admin-ajax.php // файл, принимающий ajax запросы
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress htaccess для ЧПУ
+
+'has_archive' => true, // параметр при создании категории в админке, которая позволяет складывать записи
+
+add_image_size('flats-thumb', 400, 300, true); // обрезка миниатюры, выводим картинку функцией the_post_thumbnail('flats-thumb')
+
+archive-<name>.php // название файла в соответствии с типом записей
+
+single-<name>.php // офонмление страницы например конкретной квартиры, с категории вартир
+
+echo "<script>window.wp = " . json_encode(['a' => 10,]) . "</script>"; // передача переменных с php в js
+
+admin_url('admin-ajax.php'); // получение поти с файлу ajax запроса
+
+wp_die(); // останавливает работу кода php
+
+add_action('wp_ajax_[name_action]', 'name_function'); // если авторизированый пользователь. name_action указывается в обьекте запроса ajax в поле action
+add_action('wp_ajax_[name_action]', 'name_function'); // если не авторизированый пользователь. name_action указывается в обьекте запроса ajax в поле action
+
+wp_insert_post(); // безопасно вставляет/обновляет новую запись в бд
+
+add_filter('show_admin_bar', '__return_false'); // убрать панель администратора
+
+--- 4 ---
+get_sidebar("name"); // подключение сайдбара с файла sidebar-[name].php
+
+add_theme_support('post-formats', ['post-name'...]); // подключение типов постов, которые отображаются в админке настройки поста, секция "Формат". Меняется только верстка
+get_post_format(); // вернет название поста страницы
+get_template_part('path', get_template_format()); // подключение своего формата записи
+body_class(); // добавление склассов в верстку тега body, поможет в уравлении страницы версткой
+
+/**
+ * Template Name: [template name] - создаем страницу файл, и тепесь в админке в настройке старницы указываем имя шаблона что в коментариях
+ * Template post type: [name] - добавить свой шаблон, большая информация на видео 4(01:04)
+ */
+ 
+ add_action('init', function(){ // событие после повной загрузки wp но до отправки заголовков
+	 register_post_type('name_post',  [
+        'labels' => [
+            'name' => 'Отзывы', // Основное название типа записи
+            'singular_name' => 'Отзыв', // отдельное название записи типа Book
+            'add_new' => 'Добавить новый',
+            'add_new_item' => 'Добавление отзыва',
+            'edit_item' => 'Редактирование отзыва',
+            'new_item' => 'Новый отзыв',
+            'view_item' => 'Смотреть отзыв',
+            'search_items' => 'Искать отзыв',
+            'not_found' => 'Не найдено',
+            'not_found_in_trash' => 'В корзине не найдено',
+            'parent_item_colon' => '',
+            'menu_name' => 'Отзывы'
+
+        ],
+        'description' => '',
+        'public' => true,
+        'menu_position' => 25,
+        'menu_icon' => 'dashicons-format-quote',
+        'hierarchical' => false,
+        'supports' => array('title', 'editor', 'thumbnail'),
+        'texonomies' => [],
+        'has_archive' => true,
+    ]); // регистрация нового типа записи. Появляется в панели администратора
+ });
+ 
+$posts = get_posts([
+	'orderby' => 'date',
+	'order' => 'DESC',
+	'post_type' => 'reviews',
+]); // пример выборки отзывов с БД
+
+register_taxonomy('city', ['flats'], [ // в какой раздел добавить таксаномию, например в квартиры
+        'label'                 => '', // определяется параметром $labels->name
+        'labels'                => array(
+            'name'              => 'Города',
+            'singular_name'     => 'Город',
+            'search_items'      => 'Найти город',
+            'all_items'         => 'Все города',
+            'view_item '        => 'Посмотреть город',
+            'edit_item'         => 'Редактировать город',
+            'update_item'       => 'Обновить город',
+            'add_new_item'      => 'Добавить новый город',
+            'new_item_name'     => 'Добавить новый',
+            'menu_name'         => 'Города',
+        ),
+        'description'           => '', // описание таксономии
+        'public'                => true,
+        'hierarchical'          => false, // будет плоская таксаномия, это не как категории, а как теги
+    ]); // регистрирует новую таксономию, например Город
+
+https://wp-kama.ru/function/register_post_type // Добавление таксономии в ЧПУ (у записи и таксы одинаковый префикс)
+
+get_the_terms('post id', 'taxanomy name'); // получаем таксаномию конкретного поста
+
+get_term_link(); // получаем адрес архива таксаномии
+
+--- 3.2 ---
+add_action(); // выполняет действие но не возвращает никаких данных
+
+add_filter(); // выполняет действие и возвращает результат
+
+add_shortcode('name', 'short_func'); // регистрация шорткода, обьявляеся в текстовом поле форматом: [name key=value]
+function short_func($atts) {
+	$atts = sthortcode_atts(['cnt' => 5], $atts); // подскючине атрибутов в с шорткода 1 - по умолчанию, 2 - при запуске
+}
+
+add_filter('widget_text', 'do_shortcode'); // включение работы шорткодов для текстового виджета
+
+get_posts([]); // получение различных записей с базы
+
+setup_postdata($post); // загрузка каждого post с массива get_post() для приминения функций the_* . Перед цыклом нужно прописать global $post
+wp_reset_postdata(); // освобождает предыдущее действие с загрузкой постов
+
+MyWidget extends WP_Widget // родительский класс создания виджета. При создании нужно указать уникальны id в конструкторе
+register_widget('MyWidget'); // после создания нужно зарегистрировать виджет
+
+--- 3.1 ---
+the_date(); // вывод даты
+get_the_data(); // возвращает дату
+
+--- 2.2 ---
+register_sidebar([
+	'name' => 'Sidebar Right',
+	'id' => 'sidebar-right',
+	'description' => 'Правая колонка',
+]); // регистрация сайдбара, от потом появляется в админке: внешний вид\виджеты
+
+dynamic_sidebar('sidebar-id'); // вывод сайдбара
+is_active_sidebar('sidebar-id'); // проверка на активацию сайдбара
+get_sidebar(); // второй способ вывода логики главного сайдбара о отдельный файл sidebar.php который к корне темы
+
+add_theme_support('feature'); // регистрация новых возможностей темы (миниатюры - post-thumbnails, тайтл - title-tag) запускаеться по событию after_setup_theme
+
+<?php while(have_posts()): the_post(); ?> // the_post() устанавливает параметры для всех остальных функций the_*
+	<?php the_title(); ?> // вывод тайтла
+	<?php the_permalink(); ?> // вывод ссылки назапись
+	<?php the_post_thumbnail('thumbnail'); ?> // вывод ссылки на миниатюру назаписи
+<?php endwhile; ?> // пример перебора по постам
+<?php the_post_pagination(); ?> // пагинация
+
+Custom Field Suite - плагин добавления групы полей
+
+single.php - индекс для постов
+page.php - индекс для страниц
+
+is_page() - отображается страница
+is_single() - отображается одна запись
+
+--- 2.1 ---
+
+getHeader(); getFooter(); // заглушки
+
+add_action('huk name', 'function name'); // привязка на хук
+
+add_action('wp_enqueue_scripts', 'test_media'); // событие подключение стилей
+
+function test_media() {
+	wp_enqueue_stype('id_script', 'path '); // функция подключения стиля
+}
+
+get_stylesheet_uri(); // получить путь к стилям
+
+wp_enqueue_script('id_script', 'path', 'queue', 'version', 'position'); // функция подключения скрипта, можно указывать последовательность скриптов
+
+get_template_directory_uri(); // путь до темы
+
+language_attributes(); // указания языка
+
+bloginfo('charset'); // вывести кодировку, можно предедавать различные параметры в функцию
+
+home_url(); // домашняя старница сайта
+
+register_nav_menu('id_menu', 'description'); // создание меню
+wp_nav_menu([]); // вывод меню с параметрами на верстке

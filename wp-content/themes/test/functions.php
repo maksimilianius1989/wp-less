@@ -6,6 +6,7 @@ add_action('wp_enqueue_scripts', 'test_media');
 add_action('after_setup_theme', 'test_after_setup');
 add_action('widgets_init', 'test_widgets');
 add_action('init', 'test_post_types');
+add_action('wp_head', 'test_js_vars');
 
 add_filter('widget_text', "do_shortcode");
 
@@ -39,6 +40,8 @@ function test_after_setup()
     add_theme_support('title-tag');
 
     add_theme_support('post-formats', ['quote', 'aside']);
+
+    add_image_size('flats-thumb', 400, 300, true);
 }
 
 function test_widgets()
@@ -131,16 +134,96 @@ function test_post_types()
         'hierarchical' => false,
         'supports' => array('title', 'editor', 'thumbnail'),
     ]);
-    
-    function test_show_reviews() {
-        $args = [
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'post_type' => 'reviews',
-        ];
 
-        $posts = get_posts($args);
+    register_post_type('flats', [
+        'labels' => [
+            'name' => 'Квартиры', // Основное название типа записи
+            'singular_name' => 'Квартира', // отдельное название записи типа Book
+            'add_new' => 'Добавить новый квартиры',
+            'add_new_item' => 'Добавление квартиры',
+            'edit_item' => 'Редактирование квартиры',
+            'new_item' => 'Нововая квартира',
+            'view_item' => 'Смотреть квартиры',
+            'search_items' => 'Искать квартиры',
+            'not_found' => 'Не найдено квартир',
+            'not_found_in_trash' => 'В корзине не найдено квартир',
+            'parent_item_colon' => '',
+            'menu_name' => 'Квартиры'
 
-        return $posts;
-    }
+        ],
+        'public' => true,
+        'menu_position' => 25,
+        'menu_icon' => 'dashicons-category',
+        'hierarchical' => false,
+        'supports' => array('title', 'editor', 'thumbnail'),
+        'has_archive' => true,
+    ]);
+
+    register_taxonomy('city', ['flats'], [
+        'label'                 => '', // определяется параметром $labels->name
+        'labels'                => array(
+            'name'              => 'Города',
+            'singular_name'     => 'Город',
+            'search_items'      => 'Найти город',
+            'all_items'         => 'Все города',
+            'view_item '        => 'Посмотреть город',
+            'edit_item'         => 'Редактировать город',
+            'update_item'       => 'Обновить город',
+            'add_new_item'      => 'Добавить новый город',
+            'new_item_name'     => 'Добавить новый',
+            'menu_name'         => 'Города',
+        ),
+        'description'           => '', // описание таксономии
+        'public'                => true,
+        'hierarchical'          => false,
+    ]);
+
+    register_taxonomy('rooms', ['flats'], [
+        'label'                 => '', // определяется параметром $labels->name
+        'labels'                => array(
+            'name'              => 'Комнаты',
+            'singular_name'     => 'Комната',
+            'search_items'      => 'Найти комнату',
+            'all_items'         => 'Все комнаты',
+            'view_item '        => 'Посмотреть комнату',
+            'edit_item'         => 'Редактировать комнату',
+            'update_item'       => 'Обновить комнату',
+            'add_new_item'      => 'Добавить новую комнату',
+            'new_item_name'     => 'Добавить комнату',
+            'menu_name'         => 'Комнаты',
+        ),
+        'description'           => '', // описание таксономии
+        'public'                => true,
+        'hierarchical'          => false,
+    ]);
+}
+
+function test_show_reviews() {
+    $args = [
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'post_type' => 'reviews',
+    ];
+    $posts = get_posts($args);
+    return $posts;
+}
+
+function test_js_vars() {
+    $vars = [
+        'ajax_url' => admin_url('admin-ajax.php'),
+    ];
+    echo "<script>window.wp = " . json_encode($vars) . "</script>";
+}
+
+add_action('wp_ajax_flatapp', 'test_ajax_flatapp');
+add_action('wp_ajax_nopriv_flatapp', 'test_ajax_flatapp');
+
+function test_ajax_flatapp() {
+    $res = [
+        'success' => mt_rand(0, 1) ? true : false,
+        'err' => '123',
+    ];
+
+    echo json_encode($res);
+    wp_die();
 }
