@@ -1,5 +1,4 @@
 <?php get_header() ?>
-
 <main  class="clearfix">
     <div class="posts-flow clearfix">
         <?php the_post(); ?>

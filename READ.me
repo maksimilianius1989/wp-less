@@ -1,4 +1,56 @@
 <?php
+
+--- 6 ---
+<ifModule mod_deflate.c>
+	AddOutputFilerByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</ifModule> # настройка кеширования кода для апача
+
+<filesMatch ".(css|jpg|jpeg|png|gif|js|ico)$">
+	Header set Cache-Control "max-age=2628000, public"
+</filesMatch> # настройка кеширования картинок для апача
+
+/* Plugin Name: Name Plugin */ // идентификация созданого плагина в директории wp-content/plugins/[name_plugin]/index.php
+
+register_activation_hook(__FILE__, 'function_name'); // нажатие кнопки активации плагина с админки
+register_deactivation_hook(__FILE__, 'function_name'); // нажатие кнопки отключиния плагина с админки
+register_uninstall_hook(__FILE__, 'function_name'); // нажатие кнопки удаления плагина с админки
+
+// ----------------
+register_post_type('flatsapp', [
+	'labels' => [
+		'name' => 'Заявки на квартиры', // Основное название типа записи
+		'menu_name' => 'Заявки на квартиры'
+
+	],
+	'public' => true,
+	'menu_position' => 25,
+	'menu_icon' => 'dashicons-category',
+	'hierarchical' => false,
+	'supports' => array('title', 'custom-fields'),
+	'has_archive' => true,
+]);
+
+$phone = htmlspecialchars($_POST['phone']);
+
+$data = [
+	'post_type' => 'flatsapp',
+	'post_status' => 'publish',
+	'post_title' => $phone,
+];
+
+wp_insert_post($data);
+// ------------ Пример создания своего типа записи(поста) на хук инит и запись в этот тип за писи своих данных чере з аякс например
+
+add_post_meta('post_id', 'field_name', $data); // запись дополнительного поля к посту
+
+add_menu_page('page_title', 'menu_title', [права доступа], 'slag', 'callback_function'); // добавление своего пункта меню в панель администратора
+
+get_post_custom('post_id'); // вывод дополнительных мета-полей записи
+
+<FilesMatch "[file name].(php)$">
+	Deny From All
+</FilesMatch> # запрет доступа на какой-то файл, например если сломали сайт
+
 --- 5 ---
 wp-admin/admin-ajax.php // файл, принимающий ajax запросы
 
@@ -127,8 +179,8 @@ MyWidget extends WP_Widget // родительский класс создани
 register_widget('MyWidget'); // после создания нужно зарегистрировать виджет
 
 --- 3.1 ---
-the_date(); // вывод даты
-get_the_data(); // возвращает дату
+the_date(); // вывод даты. Выводит только один раз дату на странице, если вызывается больше 1 раза, то выведет дату, отличную от той, что уже была выведена
+get_the_data(); // возвращает дату. Выводит нормально больше 1 раза одну и ту же дату
 
 --- 2.2 ---
 register_sidebar([

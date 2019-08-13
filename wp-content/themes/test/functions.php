@@ -6,7 +6,6 @@ add_action('wp_enqueue_scripts', 'test_media');
 add_action('after_setup_theme', 'test_after_setup');
 add_action('widgets_init', 'test_widgets');
 add_action('init', 'test_post_types');
-add_action('wp_head', 'test_js_vars');
 
 add_filter('widget_text', "do_shortcode");
 
@@ -206,24 +205,4 @@ function test_show_reviews() {
     ];
     $posts = get_posts($args);
     return $posts;
-}
-
-function test_js_vars() {
-    $vars = [
-        'ajax_url' => admin_url('admin-ajax.php'),
-    ];
-    echo "<script>window.wp = " . json_encode($vars) . "</script>";
-}
-
-add_action('wp_ajax_flatapp', 'test_ajax_flatapp');
-add_action('wp_ajax_nopriv_flatapp', 'test_ajax_flatapp');
-
-function test_ajax_flatapp() {
-    $res = [
-        'success' => mt_rand(0, 1) ? true : false,
-        'err' => '123',
-    ];
-
-    echo json_encode($res);
-    wp_die();
 }
